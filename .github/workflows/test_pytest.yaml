@@ -39,8 +39,7 @@ jobs:
 
       - name: Install GDAL and Rasterio via Conda
         run: |
-          mamba install -y rasterio
-          python -c "import rasterio; print(f'rasterio version: {rasterio.__version__}')"
+          mamba install -y gdal
 
       - name: Install rocketpy
         run: pip install .
