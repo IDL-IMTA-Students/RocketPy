@@ -47,11 +47,13 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             brew install gdal
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            choco install gdal -y
-            echo "GDAL_HOME=C:\\Program Files\\GDAL" >> $GITHUB_ENV
-            echo "/c/Program Files/GDAL" >> $GITHUB_PATH
-            echo "INCLUDE=C:\\Program Files\\GDAL\\include;$INCLUDE" >> $GITHUB_ENV
-            echo "LIB=C:\\Program Files\\GDAL\\lib;$LIB" >> $GITHUB_ENV
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda install -c conda-forge gdal -y
+            echo "GDAL_HOME=$CONDA/Library" >> $GITHUB_ENV
+            echo "GDAL_DATA=$CONDA/Library/share/gdal" >> $GITHUB_ENV
+            echo "$CONDA/Library/bin" >> $GITHUB_PATH
+            echo "INCLUDE=$CONDA/Library/include;$INCLUDE" >> $GITHUB_ENV
+            echo "LIB=$CONDA/Library/lib;$LIB" >> $GITHUB_ENV
           fi
 
       - name: Install rocketpy
