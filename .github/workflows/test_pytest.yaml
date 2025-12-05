@@ -7,13 +7,6 @@ on:
         description: 'Log level'
         required: true
         default: 'warning'
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - "**.py"
-      - ".github/**"
-      - "pyproject.toml"
-      - "requirements*"
 
 defaults:
   run:
