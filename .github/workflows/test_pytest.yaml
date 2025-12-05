@@ -1,13 +1,14 @@
 name: Tests
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - "**.py"
-      - ".github/**"
-      - "pyproject.toml"
-      - "requirements*"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+  push:
+    branches: [ "enh/update-github-actions-for-building-rasterio" ]
 
 defaults:
   run:
