@@ -36,7 +36,6 @@ jobs:
           channels: conda-forge
           run-post: false
           activate-environment: test-env
-          environment-file: environment.yml 
 
       - name: Install GDAL and Rasterio via Conda
         run: |
