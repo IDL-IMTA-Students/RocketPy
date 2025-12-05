@@ -27,42 +27,21 @@ jobs:
       MPLBACKEND: Agg
     steps:
       - uses: actions/checkout@main
-      - name: Set up Python
-        uses: actions/setup-python@main
+      - name: Set up Conda and Environment
+        uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements.txt
-            requirements-tests.txt
-            requirements-optional.txt
+          miniforge-variant: Mambaforge
+          channels: conda-forge
+          run-post: false
+          activate-environment: test-env
+          environment-file: environment.yml 
 
-
-      - name: Install GDAL system dependencies
+      - name: Install GDAL and Rasterio via Conda
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get update
-            sudo apt-get install -y libgdal-dev gdal-bin
-            echo "CPLUS_INCLUDE_PATH=/usr/include/gdal" >> $GITHUB_ENV
-            echo "C_INCLUDE_PATH=/usr/include/gdal" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            brew install gdal
-          elif [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.python-version }}" == "3.14" ]; then
-            # Windows + Python 3.14 specific setup
-            source "$CONDA/etc/profile.d/conda.sh"
-            conda install -c conda-forge gdal -y
-            
-            cp "$CONDA/Library/lib/gdal.lib" "$CONDA/Library/lib/gdal_i.lib"
-
-            echo "GDAL_HOME=$CONDA/Library" >> $GITHUB_ENV
-            echo "GDAL_DATA=$CONDA/Library/share/gdal" >> $GITHUB_ENV
-            echo "$CONDA/Library/bin" >> $GITHUB_PATH
-            echo "INCLUDE=$CONDA/Library/include;$INCLUDE" >> $GITHUB_ENV
-            echo "LIB=$CONDA/Library/lib;$LIB" >> $GITHUB_ENV
-
-            GDAL_VER=$("$CONDA/Library/bin/gdalinfo" --version | awk '{print $2}' | tr -d ',')
-            echo "GDAL_VERSION=$GDAL_VER" >> $GITHUB_ENV
-          fi
+          mamba install -y rasterio
+          python -c "import rasterio; print(f'rasterio version: {rasterio.__version__}')"
 
       - name: Install rocketpy
         run: pip install .
