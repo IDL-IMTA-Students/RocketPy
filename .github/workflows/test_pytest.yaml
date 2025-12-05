@@ -48,9 +48,12 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             brew install gdal
           elif [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.python-version }}" == "3.14" ]; then
+            # Windows + Python 3.14 specific setup
             source "$CONDA/etc/profile.d/conda.sh"
             conda install -c conda-forge gdal -y
             
+            cp "$CONDA/Library/lib/gdal.lib" "$CONDA/Library/lib/gdal_i.lib"
+
             echo "GDAL_HOME=$CONDA/Library" >> $GITHUB_ENV
             echo "GDAL_DATA=$CONDA/Library/share/gdal" >> $GITHUB_ENV
             echo "$CONDA/Library/bin" >> $GITHUB_PATH
