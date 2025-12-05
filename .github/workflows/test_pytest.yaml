@@ -1,14 +1,13 @@
 name: Tests
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-  push:
-    branches: [ "enh/update-github-actions-for-building-rasterio" ]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "**.py"
+      - ".github/**"
+      - "pyproject.toml"
+      - "requirements*"
 
 defaults:
   run:
@@ -27,19 +26,15 @@ jobs:
       MPLBACKEND: Agg
     steps:
       - uses: actions/checkout@main
-      - name: Set up Conda and Environment
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Set up Python
+        uses: actions/setup-python@main
         with:
-          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          miniforge-variant: Miniforge3
-          channels: conda-forge
-          run-post: false
-          activate-environment: test-env
-
-      - name: Install GDAL and Rasterio via Conda
-        run: |
-          mamba install -y gdal gdal-config
+          cache: 'pip'
+          cache-dependency-path: |
+            requirements.txt
+            requirements-tests.txt
+            requirements-optional.txt
 
       - name: Install rocketpy
         run: pip install .
