@@ -7,6 +7,8 @@ on:
         description: 'Log level'
         required: true
         default: 'warning'
+  push:
+    branches: [ "enh/update-github-actions-for-building-rasterio" ]
 
 defaults:
   run:
