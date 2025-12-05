@@ -37,6 +37,7 @@ jobs:
             requirements-tests.txt
             requirements-optional.txt
 
+
       - name: Install GDAL system dependencies
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
@@ -49,17 +50,16 @@ jobs:
           elif [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.python-version }}" == "3.14" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda install -c conda-forge gdal -y
-
+            
             echo "GDAL_HOME=$CONDA/Library" >> $GITHUB_ENV
             echo "GDAL_DATA=$CONDA/Library/share/gdal" >> $GITHUB_ENV
-            
             echo "$CONDA/Library/bin" >> $GITHUB_PATH
-            
             echo "INCLUDE=$CONDA/Library/include;$INCLUDE" >> $GITHUB_ENV
             echo "LIB=$CONDA/Library/lib;$LIB" >> $GITHUB_ENV
 
             GDAL_VER=$("$CONDA/Library/bin/gdalinfo" --version | awk '{print $2}' | tr -d ',')
             echo "GDAL_VERSION=$GDAL_VER" >> $GITHUB_ENV
+          fi
 
       - name: Install rocketpy
         run: pip install .
