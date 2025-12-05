@@ -37,22 +37,22 @@ jobs:
             requirements-tests.txt
             requirements-optional.txt
 
-      - name: Install GDAL system deps (Ubuntu)
-        if: runner.os == 'Linux'
+      - name: Install GDAL system dependencies
         run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update
-            sudo apt-get install -y gdal-bin libgdal-dev libproj-dev pkg-config build-essential
-
-      - name: Install GDAL system deps (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew update
-          brew install gdal proj
-
-      - name: Install GDAL via Chocolatey (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          choco install -y gdal
+            sudo apt-get install -y libgdal-dev gdal-bin
+            echo "CPLUS_INCLUDE_PATH=/usr/include/gdal" >> $GITHUB_ENV
+            echo "C_INCLUDE_PATH=/usr/include/gdal" >> $GITHUB_ENV
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install gdal
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            choco install gdal -y
+            echo "GDAL_HOME=C:\\Program Files\\GDAL" >> $GITHUB_ENV
+            echo "/c/Program Files/GDAL" >> $GITHUB_PATH
+            echo "INCLUDE=C:\\Program Files\\GDAL\\include;$INCLUDE" >> $GITHUB_ENV
+            echo "LIB=C:\\Program Files\\GDAL\\lib;$LIB" >> $GITHUB_ENV
+          fi
 
       - name: Install rocketpy
         run: pip install .
